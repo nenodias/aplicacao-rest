@@ -1,5 +1,5 @@
 # *-* coding:utf-8 *-*
-from datetime import datetime
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
@@ -9,10 +9,10 @@ User = get_user_model()
 
 class ArtigoSerializer(serializers.ModelSerializer):
     links = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Artigo
-        fields = ('id', 'titulo', 'conteudo', 'data_publicacao')
+        fields = ('id', 'titulo', 'conteudo', 'data_publicacao', 'links', 'posts')
     
     def get_links(self, obj):
         request = self.context['request']
@@ -22,7 +22,7 @@ class ArtigoSerializer(serializers.ModelSerializer):
     def validate_data_publicacao(self, value):
         novo = not self.instance
         alterado = self.instance and self.instance.data_publicacao != data_publicacao
-        if (novo or alterado) and (value < date.today()):
+        if (novo or alterado) and (value < timezone.now() ):
             msg = _('Data de Publicação não pode ser no passado')
             raise serializers.ValidationError(msg)
         return value

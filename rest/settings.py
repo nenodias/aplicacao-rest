@@ -16,7 +16,8 @@ INSTALLED_APPS = (
     #terceiros
     'rest_framework',
     'rest_framework.authtoken',
-    'core',
+    #meus apps
+    'rest.core',
 )
 
 
@@ -36,6 +37,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_MODEL_SERIALIZER_CLASS': 'drf_toolbox.serializers.ModelSerializer',
     'PAGE_SIZE': 100
 }
 

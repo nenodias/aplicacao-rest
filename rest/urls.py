@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 
 from rest_framework.authtoken.views import obtain_auth_token
 
-from core.urls import router
+from rest.core.urls import router
 
 urlpatterns = [
     url(r'^api/token/', obtain_auth_token, name='api-token'),
