@@ -4,11 +4,19 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.reverse import reverse
-from .models import Artigo
+from .models import Artigo, Post
 User = get_user_model()
+
+class PostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+            model = Post
+            fields = ('id', 'titulo', 'conteudo', 'data_publicacao')
 
 class ArtigoSerializer(serializers.ModelSerializer):
     links = serializers.SerializerMethodField()
+
+    posts = PostSerializer(many=True)
 
     class Meta:
         model = Artigo
@@ -26,6 +34,21 @@ class ArtigoSerializer(serializers.ModelSerializer):
             msg = _('Data de Publicação não pode ser no passado')
             raise serializers.ValidationError(msg)
         return value
+
+    def create(self, validated_data):
+        '''
+            O Create deve ser reimplementado para tratar a criação dos itens
+        '''
+        try:
+            posts_data = validated_data.pop('posts')
+            artigo = Artigo.objects.create(**validated_data)
+            for post_data in posts_data:
+                post = Post.objects.create(**post_data)
+                artigo.posts.add(post)
+            return artigo
+        except Exception as e:
+            print(e)
+        return None
 
 class UserSerializer(serializers.ModelSerializer):
     links = serializers.SerializerMethodField()
