@@ -1,5 +1,6 @@
 # *-* coding:utf-8 *-*
 from django.contrib.auth import get_user_model
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import authentication, permissions, viewsets, filters
 from .models import Artigo
 from .serializers import ArtigoSerializer, UserSerializer
@@ -20,7 +21,7 @@ class DefaultMixin(object):
     max_paginate_by = 100
 
     filter_backends = (
-        filters.DjangoFilterBackend,
+        DjangoFilterBackend,
         filters.SearchFilter,
         filters.OrderingFilter,
     )
